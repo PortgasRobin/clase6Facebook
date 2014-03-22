@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Canvas</title>
+		<link rel="stylesheet" type="text/css" />
+		<style>
+			#lienzo {
+				border-style: solid;
+				border-width: 2px;
+			}
+			#columna1{
+			    display: inline-block;
+			    width: 55%;
+			    text-align: center;
+			}
+			#columna2{
+                display: inline-block;
+                width: 30%;
+                vertical-align: top;
+                text-align: center;
+            }
+		</style>
+		
+		<script src="//connect.facebook.net/en_US/all.js"></script>
+		<script src="javascript/jquery-1.10.2.min.js"></script>
+        <script>
+            function grumpy_meme() {
+                //obtenemos el contexto
+                var elCanvas = $("canvas")[0];
+                var contexto = elCanvas.getContext("2d");
+                //crear un objeto imagen
+                var imagen = new Image();
+                //modificar su atributo src
+                imagen.src = "imagenes/grumpy_cat.jpg";
+                //cargar la imagen en el canvas
+                imagen.onload = function() {
+                    contexto.drawImage(imagen, 0, 0, 400, 500);
+                };
+
+                //Escucho el evento keyup en las cajas mensajes
+                $(".mensajes").keyup(function(evento) {
+                    //pinto de nuevo la imagen del gatito
+                    contexto.drawImage(imagen, 0, 0, 400, 500);
+                    //Defino los estilos de texto
+                    contexto.font = "60px Arial";
+                    contexto.strokeStyle = "black";
+                    contexto.fillStyle = "white";
+                    contexto.textAlign = "center";
+                    //obtengo el valor de los cuadros de texto
+                    var textoArriba = $("#mensaje-arriba").val();
+                    var textoAbajo = $("#mensaje-abajo").val();
+                    //pintamos los textos arriba y abajo, con relleno y con borde
+                    contexto.fillText(textoArriba, 200, 75);
+                    contexto.strokeText(textoArriba, 200, 75);
+                    contexto.fillText(textoAbajo, 200, 470);
+                    contexto.strokeText(textoAbajo, 200, 470);
+                });
+
+                $("#link-guardar").click(function(evento) {
+                    //obtengo la imagen del canvas
+                    var meme = elCanvas.toDataURL();
+                    //obtengo el anchor
+                    var enlace = evento.target;
+                    enlace.href = meme;
+                    enlace.download = "mi_meme.jpg";
+                });
+
+            }
+
+        </script>
+
+        <script>
+            $(function() {
+                //Configurar facebook App aqui
+                //INICIAR LA APLICACION
+                FB.init({
+                    appId : "ID de la APP",
+                    status : true,
+                    cookie : true,
+                    xfbml : true,
+                    oauth : true
+                });
+
+                //DETERMINAR EL ESTATUS
+                FB.getLoginStatus(function(response) {
+                    if (response.status === 'connected') {
+                        //logeado y autorizado
+                        
+                    } else
+                    //no autorizado o no logeado
+                    {
+                        
+                    }
+
+                });
+
+                //FUNCION A MOSTRAR SI NO ESTA CONECTADO
+                function muestraLogin() {
+                    //INVOCAMOS AL METODO DE LOGIN DE FACEBOOK:
+                    FB.login(function(response) {
+                        //SI EL USUARIO AUTORIZO
+                        if (response.authResponse) {
+                            
+                        } else {//EL USUARIO NO AUTORIZO
+                            
+                        }
+
+                    }, {
+                        scope : 'email, read_stream, user_birthday,status_update,publish_stream,user_about_me'
+                    });
+                };
+
+            });
+        </script>
+
+	</head>
+	<body>
+	    <div id="fb-root"></div>
+        <div id="columna1">
+		  <canvas id="lienzo" width="400" height="500" > </canvas>
+		</div>
+		<div id="columna2">
+		  <p>
+            Mensaje Arriba
+            <input id="mensaje-arriba" class="mensajes" type="text" />
+            </p>
+          <p>
+            Mensaje Abajo
+            <input id="mensaje-abajo" class="mensajes" type="text" />
+          </p>
+          <p>
+            <a id="link-guardar" href="#">Guardar la imagen!</a>
+          </p>
+         </div>
+	</body>
+</html>
